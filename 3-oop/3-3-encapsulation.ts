@@ -37,4 +37,29 @@
     console.log(coffeeMachine.makeCoffee(2));
     coffeeMachine.fillCoffeeBeans(50);
     console.log(coffeeMachine.makeCoffee(2));
+
+    class User {
+        private internalAge = 4;
+        get fullName(): string {
+            return `${this.firstName} ${this.lastName}`
+        }
+        get age(): number {
+            return this.internalAge;
+        }
+
+        set age(num: number) {
+            if(num > 0){
+                this.internalAge = num;
+            }
+        }
+        constructor(private firstName: string,  private lastName: string) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
+    }
+
+    const user = new User('Steve', 'Jobs');
+    console.log(user.fullName);
+    user.age = 6
+    console.log(user.age);
 }
