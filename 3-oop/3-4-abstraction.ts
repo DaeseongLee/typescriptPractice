@@ -7,10 +7,15 @@
 
     interface CoffeeMaker {
         makeCoffee(shots: number): CoffeeCup;
-
     }
 
-    class CoffeeMachine implements CoffeeMaker{
+     interface CommercialCoffeeMaker {
+         makeCoffee(shots: number): CoffeeCup;
+         fillCoffeeBeans(beans: number): void;
+         clean(): void;
+    }
+
+    class CoffeeMachineImpl implements CoffeeMaker, CommercialCoffeeMaker{
         private coffeeBeans = 0;
         private static readonly BEANS_GRAMM_PER_SHOT = 7;
 
@@ -18,19 +23,12 @@
             this.coffeeBeans = coffeeBeans;
         }
 
-        fillCoffeeBeans(beans: number) {
-            if (beans < 0) {
-                throw new Error('value for beans should be greater than 0');
-            }
-            this.coffeeBeans += beans;
-        }
-
         private grindBeans(shots: number) {
             console.log(`grinding beans for ${shots}`);
-            if (this.coffeeBeans < shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT) {
+            if (this.coffeeBeans < shots * CoffeeMachineImpl.BEANS_GRAMM_PER_SHOT) {
                 throw new Error('Not enough coffee beans!!');
             }
-            this.coffeeBeans -= shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT;
+            this.coffeeBeans -= shots * CoffeeMachineImpl.BEANS_GRAMM_PER_SHOT;
         }
 
         private preheat(): void {
@@ -43,18 +41,46 @@
                 hasMilk: false,
             }
         }
+        fillCoffeeBeans(beans: number) {
+            if (beans < 0) {
+                throw new Error('value for beans should be greater than 0');
+            }
+            this.coffeeBeans += beans;
+        }
+
         makeCoffee(shots: number): CoffeeCup {
             this.grindBeans(shots);
             this.preheat();
             return this.extract(shots);
         }
+
+        clean() {
+            console.log('clean!!!!');
+        }
     }
 
-    const coffeeMachine:CoffeeMachine = new CoffeeMachine(50);
-    coffeeMachine.makeCoffee(2);
-    coffeeMachine.fillCoffeeBeans;
+    class AmateurUser {
+        constructor(private machine: CoffeeMaker) { }
+        makeCoffee() {
+            const coffee = this.machine.makeCoffee(2);
+            console.log(coffee);
+        }
+    }
 
-    const coffeeMachine2: CoffeeMaker = new CoffeeMachine(50);
-    coffeeMachine2.makeCoffee(2);
-    //coffeeMachine2.fillCoffeeBeans; //interface CoffeeMaker에는 fillCoffeeBeans라는 함수가 없기 때문에 에러발생
+    class ProBarista {
+        constructor(private machine: CommercialCoffeeMaker) { }
+        makeCoffee() {
+            const coffee = this.machine.makeCoffee(2);
+            console.log(coffee);
+            this.machine.fillCoffeeBeans(45);
+            this.machine.clean();
+        }
+    }
+
+    const coffeeMachine:CoffeeMachineImpl = new CoffeeMachineImpl(50);
+    const amateurUser = new AmateurUser(coffeeMachine);
+    const pro = new ProBarista(coffeeMachine);
+    amateurUser.makeCoffee();
+    pro.makeCoffee();
+
 }
