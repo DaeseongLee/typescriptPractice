@@ -6,7 +6,7 @@
     }
 
     type Node = {
-        value: string;
+        readonly value: string;
         next: LinkedList | null
     }
 
@@ -23,7 +23,7 @@
         }
     }
 
-    class SimpleStack implements Stack {
+    class StackImpl implements Stack {
         size: number = 1;
         constructor(private stack:LinkedList) {}
         push(value: string): void {
@@ -53,7 +53,8 @@
     }
 
     const node = new LinkedList("first");
-    const stack = new SimpleStack(node);
+    const stack = new StackImpl(node);
+
     stack.push('second');
     console.log(stack.getStack);
     console.log(stack.pop());
